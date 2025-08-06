@@ -1,0 +1,42 @@
+{
+  "name": "Nordora - Tienda Online",
+  "short_name": "Nordora",
+  "description": "Tienda online de muebles modernos",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#008060",
+  "categories": ["shopping", "lifestyle"],
+  "lang": "es-ES",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Gestión de Stock",
+      "short_name": "Stock",
+      "description": "Gestionar inventario de productos",
+      "url": "/pages/gestion-stock.html",
+      "icons": [
+        {
+          "src": "/assets/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Nordora</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Accede a tu cuenta de Nordora">
+    <meta name="theme-color" content="#008060">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="/styles/global-styles.css">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png">
+    
+    <!-- Script principal -->
+    <script type="module" src="/main.ts"></script>
+    <script src="/disable-react-devtools.js"></script>
+</head>
+
+<body>
+    <header class="top-menu">
+        <div class="top-menu--container">
+            <a href="/" class="top-menu--logo">
+                <figure class="top-menu--symbol-container">
+                    <img src="/assets/images/nordora-menu-icon.svg" alt="Nordora Logo">
+                </figure>
+                Nordora
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Accede a tu cuenta para gestionar el stock</p>
+            </div>
+
+            <div id="login-error" class="error-message"></div>
+
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Nombre de usuario</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        autocomplete="username"
+                        placeholder="Ingresa tu nombre de usuario"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password"
+                        placeholder="Ingresa tu contraseña"
+                    >
+                </div>
+
+                <button type="submit" class="btn-primary btn-login">
+                    Entrar
+                </button>
+            </form>
+
+            <a href="/" class="back-link">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Volver a la tienda
+            </a>
+
+            <div class="demo-credentials">
+                <h3>Credenciales de prueba:</h3>
+                <p><strong>Admin:</strong> admin / admin123</p>
+<!--                 <p><strong>Manager:</strong> manager / manager123</p> -->
+<!--                 <p><strong>Stock:</strong> stock / stock123</p> -->
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { AuthView } from '/src/views/AuthView.ts';
+        
+        // Inicializar la página de login cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            AuthView.initializeLoginPage();
+        });
+    </script>
+</body>
+</html>

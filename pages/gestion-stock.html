@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Stock - Nordora</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Gestión de stock de Nordora">
+    <meta name="theme-color" content="#008060">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="/styles/global-styles.css">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.png">
+    
+    <!-- Script principal -->
+    <script type="module" src="/main.ts"></script>
+    <script src="/disable-react-devtools.js"></script>
+</head>
+
+<body>
+    <header class="top-menu">
+        <div class="top-menu--container">
+            <a href="/" class="top-menu--logo">
+                <figure class="top-menu--symbol-container">
+                    <img src="/assets/images/nordora-menu-icon.svg" alt="Nordora Logo">
+                </figure>
+                Nordora
+            </a>
+            <!-- Los botones de navegación se generarán dinámicamente por AuthView -->
+            <div class="nav-auth-buttons" id="nav-auth-buttons">
+                <!-- Aquí se insertan los botones de logout/volver dinámicamente -->
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content-stock">
+        <section class="stock--toolbar">
+            <button class="btn-primary icon-txt-btn" id="add-product-btn">
+                <span class="material-symbols-outlined">add</span>
+                Añadir producto
+            </button>
+        </section>
+
+        <section class="main-content-stock-wrapper">
+            <section id="stockList" class="stock-list">
+                <!-- Los productos se generan dinámicamente -->
+            </section>
+        </section>
+    </main>
+
+    <!-- Modal para añadir/editar productos -->
+    <div id="maskOverlay" class="mask-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Añadir producto</h2>
+                <button class="btn-close" id="closeModal" type="button">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="productoForm">
+                    <input type="hidden" id="id-field" name="id">
+                    
+                    <div class="form-group">
+                        <label for="imagen">Nombre del archivo de imagen:</label>
+                        <input type="text" id="imagen" name="imagen" value="default-img.jpg" required>
+                        <small>Ejemplo: sofa-moderno.jpg</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre del producto:</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dimensiones">Dimensiones:</label>
+                        <input type="text" id="dimensiones" name="dimensiones" placeholder="Ej: 200 x 90 x 80 cm" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="precio">Precio (€):</label>
+                        <input type="number" id="precio" name="precio" step="0.01" min="0" required>
+                    </div>
+                    
+                    <!-- Preview de imagen -->
+                    <img id="previewImg" class="preview-image" alt="Vista previa" style="display: none;">
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-neutral" id="cancelModal">Cancelar</button>
+                <button type="submit" class="btn-primary" id="formNuevoProductoSubmit">Guardar producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="maskOverlayDelete" class="mask-overlay">
+        <div class="modal-delete">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmar eliminación</h2>
+                <button class="btn-close" id="closeModalDelete" type="button">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-message">
+                    <!-- El mensaje se genera dinámicamente -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-neutral" id="cancelModalDelete">Cancelar</button>
+                <button type="button" class="btn-delete-solid" id="btnDeleteConfirm">Eliminar producto</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { AuthView } from '/src/views/AuthView.ts';
+        
+        // Inicializar la página de gestión de stock cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            // El main.ts ya se encarga de inicializar todo
+            // Solo asegurar que el botón de añadir tenga el ID correcto
+            const addBtn = document.getElementById('add-product-btn');
+            if (addBtn) {
+                addBtn.id = 'crearProductoModal'; // Cambiar al ID que espera StockView
+            }
+        });
+
+        //debug//
+        console.log('=== DEBUG MODAL STOCK ===');
+
+        // 1. Verificar que los elementos existen
+        document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded, verificando elementos...');
+        
+        // Verificar botón de añadir
+        const addBtn = document.getElementById('add-product-btn');
+        const addBtnModal = document.getElementById('crearProductoModal');
+        console.log('Botón add-product-btn:', addBtn);
+        console.log('Botón crearProductoModal:', addBtnModal);
+        
+        // Verificar modal
+        const modal = document.getElementById('maskOverlay');
+        console.log('Modal maskOverlay:', modal);
+        
+        // Verificar elementos del formulario
+        const form = document.getElementById('productoForm');
+        const modalTitle = document.getElementById('modalTitle');
+        console.log('Formulario:', form);
+        console.log('Modal title:', modalTitle);
+        
+        // 2. Añadir listener manual para test
+        if (addBtn) {
+            addBtn.addEventListener('click', (e) => {
+            console.log('¡Click en botón añadir detectado!');
+            e.preventDefault();
+            
+            // Test manual: abrir modal
+            if (modal) {
+                console.log('Abriendo modal manualmente...');
+                modal.classList.add('active');
+            }
+            });
+        }
+        
+        // 3. Test manual de cerrar modal
+        const closeBtn = document.getElementById('closeModal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+            console.log('Cerrando modal...');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+            });
+        }
+        
+        // 4. Verificar si StockView está inicializada
+        setTimeout(() => {
+            console.log('Verificando después de 2 segundos...');
+            console.log('¿Hay productos en la lista?', document.querySelectorAll('.stock-product-card').length);
+        }, 2000);
+        });
+    </script>
+</body>
+</html>
